@@ -5,7 +5,7 @@ import { Router } from "express";
 import { editProfileSchema, getProfileSchema, signUpSchema } from "./users.validation.js";
 import { validate } from "../../common/middleware/validation.js";
 export const userRouter = Router();
-userRouter.post("/signup", validate(signUpSchema), upload.single("profilePic"), signUp);
+userRouter.post("/signup",upload.single("profilePic"), validate(signUpSchema), signUp);
 userRouter.post("/signup/gmail",signUpWithGmail)
 userRouter.post("/login", login);
 userRouter.get("/getProfile/:id", authenticate,validate(getProfileSchema), getProfile);

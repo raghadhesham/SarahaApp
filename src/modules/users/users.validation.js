@@ -1,17 +1,22 @@
 import Joi from "joi";
 
-export const signUpSchema = Joi.object({
+export const signUpSchema = {
+  body:Joi.object({
   fullName: Joi.string().required().trim(),
-  email: Joi.string().required(),
+    email: Joi.string().required(),
+  bio : Joi.string().min(1).max(500),
   password: Joi.string().required().min(8),
   cpassword: Joi.string().required().min(8),
   gender: Joi.string().valid("male", "female").required(),
   DOB: Joi.date().required(),
-}).required();
-export const loginSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().required(),
-});
+}).required()
+}
+export const loginSchema = {
+  body:Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  }).required()
+}
 export const getProfileSchema = {
   params:Joi.object(
    {

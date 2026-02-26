@@ -6,6 +6,8 @@ export const validate = (schema) => {
         return res.status(400).json({ message: "validation error", error });
       }
     }
-    next()
+    // req[key] = value; // overwrite with sanitized value
+
+    next();
   };
 };

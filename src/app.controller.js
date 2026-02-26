@@ -4,14 +4,15 @@ import configServices from "./config/configServices.js";
 import { userRouter } from "./modules/users/users.controllers.js";
 import { messageRouter } from "./modules/messages/messages.controllers.js";
 import cors from 'cors';
+import path from "path";
 const app = express();
 const PORT = configServices.port.port;
 export const bootstrap = async (req, res) => {
   app.use(cors(),express.json());
-  // app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({ extended: true }));
   app.use("/users", userRouter);
   app.use("/messages",messageRouter)
-  app.use("/uploads", express.static("uploads"));
+  app.use("/uploads", express.static(path.resolve("uploads")));
 
   checkConnectionDB();
   app.get("/", (req, res) => {
