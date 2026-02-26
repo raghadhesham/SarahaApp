@@ -150,12 +150,12 @@ export const getProfile = async (req, res) => {
   if (!user) {
     return res.status(400).json({ message: "user not found" });
   }
-  const { fullName, email, followers, following, picture, views } = user;
+  const { fullName, email, followers, following, profilePic, views,bio } = user;
   const followersCount = followers.length;
   const followingCount = following.length;
   return successResponse({
     res,
-    data: { fullName, email, followersCount, followingCount, picture, views },
+    data: { fullName, email, followersCount, followingCount, profilePic, views,bio },
   });
 };
 export const editProfile = async (req, res, next) => {
@@ -164,7 +164,7 @@ export const editProfile = async (req, res, next) => {
 
     const result = await userModel.updateOne(
       { _id: req.userId },
-      { $set: { fullName, bio, profilePic, gender } },
+      { $set: { fullName, bio, profilePic, gender,DOB } },
       { runValidators: true },
     );
     if (result.matchedCount === 0) {
