@@ -1,10 +1,15 @@
-import multer from 'multer';
-import path from 'path';
+import multer from "multer";
+
 export const storage = multer.diskStorage({
-    dest: 'uploads/profiles/',
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        cb(null, Date.now() + ext);
-    }
-})
-export const upload=multer({storage})
+  destination: "uploads/profiles",
+  filename: function (req, file, cb) {
+    console.log(file);
+
+    const suffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "" + suffix + "." + file.mimetype.split("/")[1]);
+  },
+});
+
+export const upload = multer({
+  storage,
+});

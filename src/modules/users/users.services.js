@@ -13,21 +13,27 @@ import {
 } from "../../common/utils/auth/token.js";
 import { OAuth2Client } from "google-auth-library";
 import { ProviderEnum } from "../../config/enums/user.enum.js";
+import path from "path";
 
 export const signUp = async (req, res) => {
-  const profilePic = req.file ? req.file.path : null;
-  const { fullName, email, password, cpassword, gender, age, phone, bio, DOB } =
+  const { fullName, email, password, cpassword, gender, age, phone, bio, DOB} =
     req.body;
   const hashed = await hash(password, 12);
   const hashed2 = await hash(cpassword, 12);
 
+  let imageData = req.file
+
+
+  // let url = `${req.protocol}://${req.host}/${path.resolve(imageData.path)}`
+  // console.log(url);
+  
   const emailExists = await findOne({
     model: userModel,
     filter: { email },
   });
   if (emailExists) {
-    throw new Error("conflict");
     console.log(emailExists);
+    throw new Error("conflict");
   }
   const user = await userModel.create({
     fullName,
@@ -37,7 +43,7 @@ export const signUp = async (req, res) => {
     gender,
     age,
     phone,
-    profilePic,
+    profilePic : imageData ? imageData.path : undefined,
     bio,
     DOB,
   });
