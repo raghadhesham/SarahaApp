@@ -35,7 +35,7 @@ export const fileFilter = (allowedType) => {
 }
 
 export const cloudinaryStorage = (customPath) => {
-  return multer.diskStorage({
+  return multer.memoryStorage({
     destination: function (req, file, cb) {
       let filePath = `uploads/${customPath}`;
       if (!fs.existsSync(filePath)) {

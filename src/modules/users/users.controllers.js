@@ -21,6 +21,15 @@ import {
   editProfileSchema,
   getProfileSchema,
   signUpSchema,
+  loginSchema,
+  followUserSchema,
+  unFollowUserSchema,
+  logoutSchema,
+  confirmEmailSchema,
+  resendOTPEmailSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  updatePasswordSchema,
 } from "./users.validation.js";
 import { validate } from "../../common/middleware/validation.js";
 import { successResponse } from "../../common/utils/index.js";
@@ -36,8 +45,8 @@ userRouter.post(
   validate(signUpSchema),
   signUp,
 );
-userRouter.post("/signup/gmail", signUpWithGmail);
-userRouter.post("/login", login);
+userRouter.post("/signup/gmail", validate(signUpSchema), signUpWithGmail);
+userRouter.post("/login", validate(loginSchema), login);
 userRouter.get(
   "/getProfile/:id",
   authenticate,
@@ -50,12 +59,22 @@ userRouter.patch(
   validate(editProfileSchema),
   editProfile,
 );
-userRouter.post("/follow/:id", authenticate, followUser);
-userRouter.post("/unfollow/:id", authenticate, unfollowUser);
+userRouter.post(
+  "/follow/:id",
+  authenticate,
+  validate(followUserSchema),
+  followUser,
+);
+userRouter.post(
+  "/unfollow/:id",
+  authenticate,
+  validate(unFollowUserSchema),
+  unfollowUser,
+);
 userRouter.post(
   "/cloudinary",
   authenticate,
-  upload("image",extensions.image).single("image"),
+  upload("image", extensions.image).single("image"),
   async (req, res) => {
     try {
       console.log(req.file);
@@ -79,10 +98,27 @@ userRouter.post(
     }
   },
 );
-userRouter.post("/logout", authenticate, logOut);
-userRouter.patch("/confirmEmail", confirmEmail);
-userRouter.patch("/resendOTP", resendOTP);
-userRouter.post("/toggleTwoStepVerification", authenticate, toggletwoStepVerification);
-userRouter.patch("/updatePassword", authenticate, updatePassword)
-userRouter.patch("/forgetPassword", forgetPassword)
-userRouter.patch("/resetPassword", resetPassword)
+userRouter.post("/logout", authenticate, validate(logoutSchema), logOut);
+userRouter.patch("/confirmEmail", validate(confirmEmailSchema), confirmEmail);
+userRouter.patch("/resendOTP", validate(resendOTPEmailSchema), resendOTP);
+userRouter.post(
+  "/toggleTwoStepVerification",
+  authenticate,
+  toggletwoStepVerification,
+);
+userRouter.patch(
+  "/updatePassword",
+  authenticate,
+  validate(updatePasswordSchema),
+  updatePassword,
+);
+userRouter.patch(
+  "/forgetPassword",
+  validate(forgotPasswordSchema),
+  forgetPassword,
+);
+userRouter.patch(
+  "/resetPassword",
+  validate(resetPasswordSchema),
+  resetPassword,
+);
