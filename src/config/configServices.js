@@ -27,7 +27,7 @@ export const config= ({
         cloud_api_secret:process.env.CLOUDINARY_API_SECRET
     },
     redis: {
-        redis_url:process.env.REDIS_URl
+        redis_url:process.env.REDIS_URL
     },
     email: {
         email: process.env.EMAIL,

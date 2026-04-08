@@ -12,13 +12,12 @@ import helmet from "helmet";
 import ratelimit from "express-rate-limit";
 import { adminRouter } from "./modules/admins/admins.controllers.js";
 import { errorHandler } from "./common/utils/response/error.response.js";
-const app = express();
 const PORT = config.port.port;
 const limiter = ratelimit({
   windowMs: 15 * 60 * 1000,
   limit: 10, 
 });
-export const bootstrap = async (req, res) => {
+export const bootstrap = async (app) => { 
   const whiteList = [config.cors.white_list];
   const corsOptions = {
     origin: function (origin, callback) {
@@ -40,7 +39,7 @@ export const bootstrap = async (req, res) => {
   app.use("/uploads", express.static("uploads"));
   app.use("/auth", authRouter);
   app.use("/admins", adminRouter)
-  checkConnectionDB();
+  await checkConnectionDB();
   await connectRedis();
 
   app.get("/", (req, res) => {
