@@ -63,6 +63,19 @@ export const findByIdAndUpdate = async({
     }
     return await query
 }
+export const findOneAndUpdate = async({
+    model,
+    filter={},
+    update = {},
+    select = '',
+    options = { new: true, runValidators: true }
+} = {}) => {
+    let query = model.findOneAndUpdate(filter, update, options);
+    if (select) {
+        query = query.select(select);
+    }
+    return await query
+}
 
 export const findByIdAndReplace = async ({
   model,

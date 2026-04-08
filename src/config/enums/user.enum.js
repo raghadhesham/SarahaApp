@@ -7,7 +7,6 @@ export const ProviderEnum = {
     google:1
 }
 export const roleEnum = {
-    admin:0,
+    admin: 0,
     user: 1
-    
 }

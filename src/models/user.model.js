@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { GenderEnum, ProviderEnum } from "../config/enums/user.enum.js";
+import { GenderEnum, ProviderEnum, roleEnum } from "../config/enums/user.enum.js";
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -50,12 +50,21 @@ const userSchema = new mongoose.Schema(
     profilePic: {
       type: String
     },
+    album: {
+      type:[String]
+    },
     bio: {
       type: String,
       maxLength:500
     },
     gender: {
-      type:[GenderEnum.female,GenderEnum.male]
+      type: String,
+      enum:[GenderEnum.female,GenderEnum.male]
+    },
+    role: {
+      type: Number,
+      enum:[roleEnum.user, roleEnum.admin],
+      default:roleEnum.user
     },
     confirmEmail: {
       type:Date
@@ -66,7 +75,18 @@ const userSchema = new mongoose.Schema(
     DOB: {
       type: Date,
       required:true
-    }
+    },
+    changeCredential: {
+      type:Date //lma ne3ml log out dah hnsayev feeh elwa2t blzbt 3shan ne3raf b3d keda eluser beysta3mel el token 2bl wla b3d, law b3d? no, invalid❌
+    },
+    confirmed: {
+      type: Boolean,
+      default: false,
+    },
+    istwoStepVerificationEnabled: {
+      type: Boolean,
+      default: false,
+    },
 
   },
   {

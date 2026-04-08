@@ -1,14 +1,41 @@
 import jwt from "jsonwebtoken";
-import configServices from "../../../config/configServices.js";
+import { config } from "../../../config/configServices.js";
+import { randomUUID } from "node:crypto";
+
 export const generateAccessToken = (
   payload,
-  // expiresIn = configServices.jwt.expires,
+  // expiresIn = config.jwt.access_expiresIn,
 ) => {
-  return jwt.sign(payload, configServices.jwt.key);
+  const jwtId = randomUUID();
+  return jwt.sign(payload, config.jwt.access_key, { expiresIn:900, jwtid: jwtId });
 };
-export const verifyToken = (token) => {
+export const generateRefreshToken = (
+  payload,
+  expiresIn = config.jwt.refresh_expiresIn,
+) => {
+  const jwtId = randomUUID();
+  return jwt.sign(payload, config.jwt.refresh_key, {
+    expiresIn,
+    jwtid: jwtId,
+  });
+};
+
+export const verifyRefreshToken = (token) => {
   try {
-    return jwt.verify(token, configServices.jwt.key);
+    return jwt.verify(token, config.jwt.refresh_key);
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      throw new Error("Token has expired");
+    }
+    if (error.name === "JsonWebTokenError") {
+      throw new Error("Invalid token");
+    }
+    throw new Error("Token verification failed");
+  }
+};
+export const verifyAccessToken = (token) => {
+  try {
+    return jwt.verify(token, config.jwt.access_key);
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       throw new Error("Token has expired");
@@ -20,11 +47,14 @@ export const verifyToken = (token) => {
   }
 };
 export const createTokenPayload = (user) => {
+  console.log(user.role);
+  
   return {
     userId: user._id.toString(),
     email: user.email,
     sub: user.email,
-  }; //sub: refers to the holder of the token 
+    role: user.role,
+  }; //sub: refers to the holder of the token
 };
 
 export const decodeToken = async ({ token } = {}) => {
@@ -32,8 +62,14 @@ export const decodeToken = async ({ token } = {}) => {
   console.log(decoded);
 };
 export const extractTokenFromHeader = (authHeader) => {
-  if (!authHeader.startsWith("Bearer ")) {
+  if (!authHeader.startsWith("bearer ")) {
     return null;
   }
   return authHeader.split(" ")[1];
+};
+export const baseRevokeToken = async (userId) => {
+  return `${userId}::`;
+};
+export const revokeToken = async(userId, jti) => {
+  return `${userId}::${jti}`;
 };
